@@ -66,7 +66,7 @@ const renderBook = (book) => {
 
   const completeBtn = document.createElement("button");
   completeBtn.setAttribute("data-testid", "bookItemIsCompleteButton");
-  completeBtn.textContent = book.read ? "Belum selesai dibaca" : "Selesai dibaca";
+  completeBtn.textContent = book.isComplete ? "Belum selesai dibaca" : "Selesai dibaca";
 
   const deleteBtn = document.createElement("button");
   deleteBtn.setAttribute("data-testid", "bookItemDeleteButton");
@@ -85,7 +85,7 @@ const renderBook = (book) => {
   bookElement.appendChild(year);
   bookElement.appendChild(buttonContainer);
 
-  if (book.read) {
+  if (book.isComplete) {
     completeList.appendChild(bookElement);
   } else {
     incompleteList.appendChild(bookElement);
@@ -110,7 +110,7 @@ const renderBook = (book) => {
       document.getElementById("bookFormTitle").value = bookToEdit.title;
       document.getElementById("bookFormAuthor").value = bookToEdit.author;
       document.getElementById("bookFormYear").value = bookToEdit.year;
-      document.getElementById("bookFormIsComplete").checked = bookToEdit.read;
+      document.getElementById("bookFormIsComplete").checked = bookToEdit.isComplete;
 
       collectFormData.setAttribute("data-editing-book-id", bookId);
       submitButton.innerHTML = "Perbarui Buku";
@@ -124,13 +124,13 @@ const renderBook = (book) => {
     const bookToUpdate = userData.find(user => user.id === bookId);
 
     if (bookToUpdate) {
-      bookToUpdate.read = !bookToUpdate.read;
+      bookToUpdate.isComplete = !bookToUpdate.isComplete;
       localStorage.setItem(storageKey, JSON.stringify(userData));
 
       const completeBtn = bookElement.querySelector("[data-testid='bookItemIsCompleteButton']");
-      completeBtn.textContent = bookToUpdate.read ? "Belum selesai dibaca" : "Selesai dibaca";
+      completeBtn.textContent = bookToUpdate.isComplete ? "Belum selesai dibaca" : "Selesai dibaca";
 
-      if (bookToUpdate.read) {
+      if (bookToUpdate.isComplete) {
         completeList.appendChild(bookElement);
       } else {
         incompleteList.appendChild(bookElement);
@@ -165,8 +165,8 @@ collectFormData.addEventListener("submit", (ev) => {
 
   const title = document.getElementById("bookFormTitle").value;
   const author = document.getElementById("bookFormAuthor").value;
-  const year = document.getElementById("bookFormYear").value;
-  const read = document.getElementById("bookFormIsComplete").checked;
+  const year = parseInt(document.getElementById("bookFormYear").value);
+  const isComplete = document.getElementById("bookFormIsComplete").checked;
 
   const bookId = collectFormData.getAttribute("data-editing-book-id");
 
@@ -175,7 +175,7 @@ collectFormData.addEventListener("submit", (ev) => {
     title,
     author,
     year,
-    read
+    isComplete
   };
 
   const userData = getUserList();
@@ -186,7 +186,7 @@ collectFormData.addEventListener("submit", (ev) => {
       bookToEdit.title = title;
       bookToEdit.author = author;
       bookToEdit.year = year;
-      bookToEdit.read = read;
+      bookToEdit.isComplete = isComplete;
 
       localStorage.setItem(storageKey, JSON.stringify(userData));
       location.reload();
